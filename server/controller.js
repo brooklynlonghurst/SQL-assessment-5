@@ -249,20 +249,26 @@ module.exports = {
     },
     getCities: (req, res) => { //what is it i want to join? country_id
         sequelize.query(`
-            SELECT city_id, city.name, rating, country.country_id, country.name
-            FROM cities AS city
-            JOIN countries AS country
-            ON city.country_id = country.country_id;
+            SELECT 
+                city_id,
+                cities.name AS city,
+                rating,
+                cities.country_id,
+                countries.country_id,
+                countries.name AS country
+            FROM cities 
+            JOIN countries 
+            ON countries.country_id = cities.country_id;
         `).then(dbResponse => res.status(200).send(dbResponse[0]))
        .catch(err => console.log(err))
-    }, 
-    // deleteCity: (req, res) => {
-    //     const { id } = req.body
-    //     sequelize.query(`
-    //         DELETE 
-    //         FROM cities
-    //         WHERE id = ${id};
-    //     `).then(dbResponse => res.status(200).send(dbResponse[0]))
-    //     .catch(err => console.log(err))
-    // }
+    },
+    deleteCity: (req, res) => {
+        const { id } = req.params
+        sequelize.query(`
+            DELETE 
+            FROM cities
+            WHERE city_id = ${id};
+        `).then(dbResponse => res.status(200).send(dbResponse[0]))
+        .catch(err => console.log(err))
+    }
 }
